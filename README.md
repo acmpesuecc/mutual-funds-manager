@@ -8,12 +8,12 @@ Prerequisites
 
 ```
 {
-    Name:   "HDFC balanced advantage Fund",
-    Category: "Hybrid",
-    CAGR: []CAGR{
-        {OneYear: 0.15, ThreeYear: 0.18, FiveYear: 0.20},
-        {OneYear: 0.12, ThreeYear: 0.16, FiveYear: 0.19},
-    },
-    Rating: 5,
+    "name": "Hdfc balanced advantage fund",
+    "category": "Equity",
+    "cagr": [
+        {"1_year": 5.5, "3_year": 6.5, "5_year": 7.5}
+    ],
+    "rating": 4
 }
+
 ```
