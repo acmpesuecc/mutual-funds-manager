@@ -1,0 +1,38 @@
+{
+	"info": {
+		"_postman_id": "29047ec4-8330-47f7-bbee-3700376f9af0",
+		"name": "Mutual Fund Manager",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "33792107",
+		"_collection_link": "https://blue-robot-150199.postman.co/workspace/mutual-fund-Workspace~000ed3ed-4511-4b68-9752-e108aff3ae99/collection/33792107-29047ec4-8330-47f7-bbee-3700376f9af0?action=share&source=collection_link&creator=33792107"
+	},
+	"item": [
+		{
+			"name": "add a fund",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Hdfc fund\",\r\n    \"category\": \"Equity\",\r\n    \"cagr\": [\r\n        {\"1_year\": 5.5, \"3_year\": 6.5, \"5_year\": 7.5}\r\n    ],\r\n    \"rating\": 4\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/addFund"
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/getAllFunds"
+			},
+			"response": []
+		}
+	]
+}
