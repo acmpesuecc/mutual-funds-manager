@@ -1,5 +1,12 @@
+# Mutual Funds Manager
+
+Prerequisites
+1. Postman API tool
+2. MongoDB Compass
+
 ## Input Data
 
+```json
 {
     Name:   "HDFC balanced advantage Fund",
     Category: "Hybrid",
@@ -9,12 +16,4 @@
     },
     Rating: 5,
 }
-{
-    Name:   "Quant Infrasturtcure Fund",
-    Category: "Equity",
-    CAGR: []CAGR{
-        {OneYear: 0.10, ThreeYear: 0.13, FiveYear: 0.14},
-        {OneYear: 0.09, ThreeYear: 0.11, FiveYear: 0.12},
-    },
-    Rating: 5,
-}
+```
