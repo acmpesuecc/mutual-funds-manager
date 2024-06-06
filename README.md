@@ -6,7 +6,7 @@ Prerequisites
 
 ## Input Data
 
-```json
+```
 {
     Name:   "HDFC balanced advantage Fund",
     Category: "Hybrid",
