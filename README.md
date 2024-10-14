@@ -1,5 +1,7 @@
 # Mutual Funds Manager
 
+This is a backend-based Mutual Fund manager which allows users to add and view mutual funds of their choice written in Go.  
+
 # Prerequisites
 
 - Go programming language             -> `https://go.dev/doc/install`
@@ -8,6 +10,10 @@
 - Postman API tool                    -> `https://www.postman.com/downloads/`
 
 Make sure the MongoDB Server is runnning. To check, go to Start and type `Services`. Look for the MongoDB server and make sure its running. If not, right click and select `Start`.
+
+# Setting Up Environment Variables
+
+If MongoDB is installed, find the directory where it is installed. The default installation path for MongoDB on Windows is typically: `C:\Program Files\MongoDB\Server\<version>\bin`. Replace <version> with the version number you installed (e.g., 5.0).
 
 # Setting up MongoDB Compass
 
@@ -26,7 +32,7 @@ Description: Lists all the mutual funds available in the database
 
 ### Create new mutual fund `POST`
 URL: `http://localhost:8080/addFund/`
-DEscription: Allows creation of a new mutual fund data
+Description: Allows creation of a new mutual fund data
 
 ## Getting Started
 
@@ -55,3 +61,4 @@ Input data can be entered by selecting `Body` tab, then choosing `raw and JSON` 
 
 MongoDB tutorial: https://www.youtube.com/playlist?list=PL4cUxeGkcC9h77dJ-QJlwGlZlTd4ecZOA
 
+For reference: ![Download Postman Video demo ](postman-demo-video.mp4)
