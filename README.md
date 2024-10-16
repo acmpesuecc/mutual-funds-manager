@@ -2,26 +2,32 @@
 
 This is a backend-based Mutual Fund manager which allows users to add and view mutual funds of their choice written in Go.  
 
+Note: If you are a contributer, please read [CONTRIBUTING.md](https://github.com/acmpesuecc/mutual-funds-manager/blob/main/CONTRIBUTING.md)
+
 # Prerequisites
 
-- Go programming language             -> `https://go.dev/doc/install`
-- MongoDB Community Server Download   -> `https://www.mongodb.com/try/download/community`
-- MongoDB Compass                     -> `https://www.mongodb.com/try/download/compass`
-- Postman API tool                    -> `https://www.postman.com/downloads/`
+- [Go programming language](https://go.dev/doc/install)
+- [MongoDB Community Server Download](https://www.mongodb.com/try/download/community)
+- [MongoDB Compass](https://www.mongodb.com/try/download/compass)
+- [Postman API tool](https://www.postman.com/downloads)
 
-Make sure the MongoDB Server is runnning. To check, go to Start and type `Services`. Look for the MongoDB server and make sure its running. If not, right click and select `Start`.
 
-# Setting Up Environment Variables
+# Setting Up MongoDB
 
-If MongoDB is installed, find the directory where it is installed. The default installation path for MongoDB on Windows is typically: `C:\Program Files\MongoDB\Server\<version>\bin`. Replace <version> with the version number you installed (e.g., 5.0).
+**For Windows**
+- If MongoDB is installed, find the directory where it is installed. The default installation path for MongoDB on Windows is typically: `C:\Program Files\MongoDB\Server\<version>\bin`. Replace <version> with the version number you installed (e.g., 5.0). 
 
-# Setting up MongoDB Compass
+- Make sure the MongoDB Server is runnning. To check, go to Start and type `Services`. Look for the MongoDB server and make sure its running. If not, right click and select `Start`.
 
-After connecting to `localhost:27017`, create a new Database `mutual_funds` with Collection name as `funds`. 
+- For setting up MongoDB Compass, after connecting to `localhost:27017`, create a new Database `mutual_funds` with Collection name as `funds`.
+
+[MongoDB tutorial](https://www.youtube.com/playlist?list=PL4cUxeGkcC9h77dJ-QJlwGlZlTd4ecZOA)
 
 # Setting up Postman
 
 Postman is a tool for testing and interacting with APIs. To set up Postman for interacting with the APIs, create a new Collection named "mutual fund manager" and add Requests within it. Right-click on the collection to add a request, then choose the HTTP request method `(GET, POST, PUT, DELETE)` and paste the corresponding URL for the desired API endpoint. The methods and URLs for this project are provided below.
+
+![Download Postman Video demo ](postman-demo-video.mp4)
 
 ## API Endpoints:
 
@@ -36,7 +42,7 @@ Description: Allows creation of a new mutual fund data
 
 ## Getting Started
 
-Run the application using `go run main.go`. 
+Run the application using `go run .`. 
 
 ## Example Input Data on Postman
 
@@ -56,9 +62,3 @@ Input data can be entered by selecting `Body` tab, then choosing `raw and JSON` 
     "rating": 5
 }
 ```
-
-# Resources & others
-
-MongoDB tutorial: https://www.youtube.com/playlist?list=PL4cUxeGkcC9h77dJ-QJlwGlZlTd4ecZOA
-
-For reference: ![Download Postman Video demo ](postman-demo-video.mp4)
