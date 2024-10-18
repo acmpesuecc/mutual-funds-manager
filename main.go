@@ -24,17 +24,17 @@ type Fund struct {
 	Rating   int    `json:"rating" bson:"rating"`
 }
 type User struct {
-	UserID       string    `json:"user_id" bson:"user_id"`
-	Username     string    `json:"username" bson:"username"`
-	Email        string    `json:"email" bson:"email"`
-	Password     string    `json:"-" bson:"password"` 
-	FirstName    string    `json:"first_name" bson:"first_name"`
-	LastName     string    `json:"last_name" bson:"last_name"`
-	DateOfBirth  time.Time `json:"date_of_birth" bson:"date_of_birth"`
-	PhoneNumber  string    `json:"phone_number" bson:"phone_number"`
-	
-	LastLoginAt  time.Time `json:"last_login_at" bson:"last_login_at"`
-	MutualFunds  []Fund    `json:"mutual_funds" bson:"mutual_funds"`
+	UserID      string    `json:"user_id" bson:"user_id"`
+	Username    string    `json:"username" bson:"username"`
+	Email       string    `json:"email" bson:"email"`
+	Password    string    `json:"-" bson:"password"`
+	FirstName   string    `json:"first_name" bson:"first_name"`
+	LastName    string    `json:"last_name" bson:"last_name"`
+	DateOfBirth time.Time `json:"date_of_birth" bson:"date_of_birth"`
+	PhoneNumber string    `json:"phone_number" bson:"phone_number"`
+
+	LastLoginAt time.Time `json:"last_login_at" bson:"last_login_at"`
+	MutualFunds []Fund    `json:"mutual_funds" bson:"mutual_funds"`
 }
 
 var collection *mongo.Collection
@@ -61,6 +61,7 @@ func main() {
 	router.POST("/addFund", addFund)
 	router.GET("/user/:userID", getUser)
 	router.POST("/addUser", addUser)
+	router.DELETE("/deleteUser", deleteUser)
 
 	router.Run()
 }
@@ -70,7 +71,7 @@ func addFund(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&fund); err != nil {
 		c.JSON(400, gin.H{
-				"error": err.Error()})
+			"error": err.Error()})
 		return
 	}
 
@@ -143,6 +144,23 @@ func addUser(c *gin.Context) {
 	}
 
 	c.JSON(201, gin.H{"result": "success", "user_id": user.UserID})
+}
+
+func deleteUser(c *gin.Context) {
+	userID := c.Param("userID")
+
+	result, err := userCollection.DeleteOne(context.TODO(), bson.M{"user_id": userID})
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	if result.DeletedCount == 0 {
+		c.JSON(404, gin.H{"error": "User not found"})
+		return
+	}
+
+	c.JSON(200, gin.H{"result": "success", "message": "User deleted successfully"})
 }
 
 func generateUniqueUserID() string {
