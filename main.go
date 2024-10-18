@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"time" // Make sure to import the time package
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -22,6 +23,7 @@ type Fund struct {
 	CAGR     []CAGR `json:"cagr" bson:"cagr"`
 	Rating   int    `json:"rating" bson:"rating"`
 }
+
 type User struct {
 	UserID       string    `json:"user_id" bson:"user_id"`
 	Username     string    `json:"username" bson:"username"`
@@ -31,12 +33,14 @@ type User struct {
 	LastName     string    `json:"last_name" bson:"last_name"`
 	DateOfBirth  time.Time `json:"date_of_birth" bson:"date_of_birth"`
 	PhoneNumber  string    `json:"phone_number" bson:"phone_number"`
-	
 	LastLoginAt  time.Time `json:"last_login_at" bson:"last_login_at"`
 	MutualFunds  []Fund    `json:"mutual_funds" bson:"mutual_funds"`
 }
 
-var collection *mongo.Collection
+var (
+	collection     *mongo.Collection
+	userCollection *mongo.Collection // Declare userCollection
+)
 
 func main() {
 	router := gin.Default()
@@ -53,11 +57,11 @@ func main() {
 	}
 
 	collection = client.Database("mutual_funds").Collection("funds")
+	userCollection = client.Database("mutual_funds").Collection("users") // Initialize userCollection
 
 	router.GET("/getAllFunds", getAllFunds)
 	router.POST("/addFund", addFund)
-	router.PUT("/updateUser",updateUser)
-
+	router.PUT("/updateUser", updateUser)
 
 	router.Run()
 }
@@ -66,8 +70,7 @@ func addFund(c *gin.Context) {
 	var fund Fund
 
 	if err := c.ShouldBindJSON(&fund); err != nil {
-		c.JSON(400, gin.H{
-			"error": err.Error()})
+		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -81,7 +84,6 @@ func addFund(c *gin.Context) {
 }
 
 func getAllFunds(c *gin.Context) {
-
 	cursor, err := collection.Find(context.TODO(), bson.M{})
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
@@ -102,8 +104,8 @@ func getAllFunds(c *gin.Context) {
 	c.JSON(200, funds)
 }
 
-func updateUser(c *gin.Context){
-	var updateUser User
+func updateUser(c *gin.Context) {
+	var updatedUser User // Make variable name consistent
 	if err := c.ShouldBindJSON(&updatedUser); err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
@@ -138,5 +140,4 @@ func updateUser(c *gin.Context){
 	}
 
 	c.JSON(200, gin.H{"result": "user updated successfully"})
-}
 }
