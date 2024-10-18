@@ -61,6 +61,7 @@ func main() {
 	router.POST("/addFund", addFund)
 	router.GET("/user/:userID", getUser)
 	router.POST("/addUser", addUser)
+	router.DELETE("/deleteFund/:name", deleteFund)
 
 	router.Run()
 }
@@ -147,4 +148,21 @@ func addUser(c *gin.Context) {
 
 func generateUniqueUserID() string {
 	return time.Now().Format("20060102150405")
+}
+
+func deleteFund(c *gin.Context) {
+	name := c.Param("name")
+
+	result, err := collection.DeleteOne(context.TODO(), bson.M{"name": name})
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	if result.DeletedCount == 0 {
+		c.JSON(404, gin.H{"error": "Fund not found"})
+		return
+	}
+
+	c.JSON(200, gin.H{"result": "success", "message": "Fund deleted successfully"})
 }

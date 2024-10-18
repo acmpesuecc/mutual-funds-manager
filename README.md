@@ -50,6 +50,11 @@ Description: Retrieves user information by user ID
 URL: `http://localhost:8080/addUser`
 Description: Creates a new user account
 
+### Delete a Mutual Fund `DELETE`
+
+URL: `http://localhost:8080/deleteFund/:name`
+Description: Deletes a specific mutual fund from the database by its name
+
 ## Getting Started
 
 Run the application using `go run .`. 
@@ -85,4 +90,6 @@ Input data can be entered by selecting `Body` tab, then choosing `raw and JSON` 
   "first_name": "John",
   "last_name": "Doe",
   "date_of_birth": "1990-01-01T00:00:00Z",
-  "phone_number": "+1234
+  "phone_number": "+1234567890"
+}
+```
