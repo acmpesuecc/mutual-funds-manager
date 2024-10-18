@@ -56,6 +56,8 @@ func main() {
 
 	router.GET("/getAllFunds", getAllFunds)
 	router.POST("/addFund", addFund)
+	router.PUT("/updateUser",updateUser)
+
 
 	router.Run()
 }
@@ -98,4 +100,43 @@ func getAllFunds(c *gin.Context) {
 	}
 
 	c.JSON(200, funds)
+}
+
+func updateUser(c *gin.Context){
+	var updateUser User
+	if err := c.ShouldBindJSON(&updatedUser); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+	if updatedUser.UserID == "" {
+		c.JSON(400, gin.H{"error": "user_id is required"})
+		return
+	}
+	filter := bson.M{"user_id": updatedUser.UserID}
+	update := bson.M{
+		"$set": bson.M{
+			"username":     updatedUser.Username,
+			"email":        updatedUser.Email,
+			"first_name":   updatedUser.FirstName,
+			"last_name":    updatedUser.LastName,
+			"date_of_birth": updatedUser.DateOfBirth,
+			"phone_number": updatedUser.PhoneNumber,
+			"mutual_funds": updatedUser.MutualFunds,
+			"last_login_at": updatedUser.LastLoginAt,
+		},
+	}
+	result, err := userCollection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Check if a user was updated
+	if result.MatchedCount == 0 {
+		c.JSON(404, gin.H{"error": "user not found"})
+		return
+	}
+
+	c.JSON(200, gin.H{"result": "user updated successfully"})
+}
 }
