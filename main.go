@@ -60,6 +60,7 @@ func main() {
 	router.GET("/getAllFunds", getAllFunds)
 	router.POST("/addFund", addFund)
 	router.GET("/user/:userID", getUser)
+	router.POST("/addUser", addUser)
 
 	router.Run()
 }
@@ -119,4 +120,31 @@ func getUser(c *gin.Context) {
 	}
 
 	c.JSON(200, user)
+}
+
+func addUser(c *gin.Context) {
+	var user User
+
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Generate a unique user ID (you may want to use a more robust method in production)
+	user.UserID = generateUniqueUserID()
+
+	// Set the last login time to the current time
+	user.LastLoginAt = time.Now()
+
+	_, err := userCollection.InsertOne(context.TODO(), user)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(201, gin.H{"result": "success", "user_id": user.UserID})
+}
+
+func generateUniqueUserID() string {
+	return time.Now().Format("20060102150405")
 }
