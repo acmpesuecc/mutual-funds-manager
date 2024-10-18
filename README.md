@@ -40,6 +40,11 @@ Description: Lists all the mutual funds available in the database
 URL: `http://localhost:8080/addFund/`
 Description: Allows creation of a new mutual fund data
 
+### Get User Information `GET`
+
+URL: `http://localhost:8080/user/:userID`
+Description: Retrieves user information by user ID
+
 ## Getting Started
 
 Run the application using `go run .`. 
@@ -60,5 +65,35 @@ Input data can be entered by selecting `Body` tab, then choosing `raw and JSON` 
         }
     ],
     "rating": 5
+}
+```
+
+## Example Output Data for Get User
+
+```json
+{
+  "user_id": "user123",
+  "username": "johndoe",
+  "email": "johndoe@example.com",
+  "first_name": "John",
+  "last_name": "Doe",
+  "date_of_birth": "1990-01-01T00:00:00Z",
+  "phone_number": "+1234567890",
+  "last_login_at": "2023-05-20T15:30:45.123Z",
+  "mutual_funds": [
+    {
+      "name": "Growth Fund",
+      "category": "Equity",
+      "cagr": [
+        {
+          "1_year": 12.5,
+          "3_year": 10.2,
+          "5_year": 9.8
+        }
+      ],
+      "rating": 4
+    },
+    // ... other mutual funds ...
+  ]
 }
 ```

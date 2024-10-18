@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -37,6 +38,7 @@ type User struct {
 }
 
 var collection *mongo.Collection
+var userCollection *mongo.Collection
 
 func main() {
 	router := gin.Default()
@@ -53,9 +55,11 @@ func main() {
 	}
 
 	collection = client.Database("mutual_funds").Collection("funds")
+	userCollection = client.Database("mutual_funds").Collection("users")
 
 	router.GET("/getAllFunds", getAllFunds)
 	router.POST("/addFund", addFund)
+	router.GET("/user/:userID", getUser)
 
 	router.Run()
 }
@@ -65,7 +69,7 @@ func addFund(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&fund); err != nil {
 		c.JSON(400, gin.H{
-			"error": err.Error()})
+				"error": err.Error()})
 		return
 	}
 
@@ -98,4 +102,21 @@ func getAllFunds(c *gin.Context) {
 	}
 
 	c.JSON(200, funds)
+}
+
+func getUser(c *gin.Context) {
+	userID := c.Param("userID")
+
+	var user User
+	err := userCollection.FindOne(context.TODO(), bson.M{"user_id": userID}).Decode(&user)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			c.JSON(404, gin.H{"error": "User not found"})
+		} else {
+			c.JSON(500, gin.H{"error": err.Error()})
+		}
+		return
+	}
+
+	c.JSON(200, user)
 }
