@@ -61,7 +61,7 @@ func main() {
 	router.POST("/addFund", addFund)
 	router.GET("/user/:userID", getUser)
 	router.POST("/addUser", addUser)
-	router.DELETE("/deleteUser", deleteUser)
+	router.DELETE("/deleteUser/:userID", deleteUser)
 
 	router.Run()
 }
