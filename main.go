@@ -22,6 +22,19 @@ type Fund struct {
 	CAGR     []CAGR `json:"cagr" bson:"cagr"`
 	Rating   int    `json:"rating" bson:"rating"`
 }
+type User struct {
+	UserID       string    `json:"user_id" bson:"user_id"`
+	Username     string    `json:"username" bson:"username"`
+	Email        string    `json:"email" bson:"email"`
+	Password     string    `json:"-" bson:"password"` 
+	FirstName    string    `json:"first_name" bson:"first_name"`
+	LastName     string    `json:"last_name" bson:"last_name"`
+	DateOfBirth  time.Time `json:"date_of_birth" bson:"date_of_birth"`
+	PhoneNumber  string    `json:"phone_number" bson:"phone_number"`
+	
+	LastLoginAt  time.Time `json:"last_login_at" bson:"last_login_at"`
+	MutualFunds  []Fund    `json:"mutual_funds" bson:"mutual_funds"`
+}
 
 var collection *mongo.Collection
 
