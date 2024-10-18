@@ -45,6 +45,11 @@ Description: Allows creation of a new mutual fund data
 URL: `http://localhost:8080/user/:userID`
 Description: Retrieves user information by user ID
 
+### Add New User `POST`
+
+URL: `http://localhost:8080/addUser`
+Description: Creates a new user account
+
 ## Getting Started
 
 Run the application using `go run .`. 
@@ -53,7 +58,9 @@ Run the application using `go run .`.
 
 Input data can be entered by selecting `Body` tab, then choosing `raw and JSON` format, and pasting the data accordingly. Ensure to follow the provided example for input data structure.
 
-```
+### For adding a new mutual fund:
+
+```json
 {
     "name": "Motilal Oswal ",
     "category": "Equity",
@@ -68,32 +75,14 @@ Input data can be entered by selecting `Body` tab, then choosing `raw and JSON` 
 }
 ```
 
-## Example Output Data for Get User
+### For adding a new user:
 
 ```json
 {
-  "user_id": "user123",
   "username": "johndoe",
-  "email": "johndoe@example.com",
+  "email": "john@example.com",
+  "password": "securepassword",
   "first_name": "John",
   "last_name": "Doe",
   "date_of_birth": "1990-01-01T00:00:00Z",
-  "phone_number": "+1234567890",
-  "last_login_at": "2023-05-20T15:30:45.123Z",
-  "mutual_funds": [
-    {
-      "name": "Growth Fund",
-      "category": "Equity",
-      "cagr": [
-        {
-          "1_year": 12.5,
-          "3_year": 10.2,
-          "5_year": 9.8
-        }
-      ],
-      "rating": 4
-    },
-    // ... other mutual funds ...
-  ]
-}
-```
+  "phone_number": "+1234
