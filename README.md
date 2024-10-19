@@ -52,8 +52,8 @@ Description: Creates a new user account
 
 ### Delete a Mutual Fund `DELETE`
 
-URL: `http://localhost:8080/deleteFund/:name`
-Description: Deletes a specific mutual fund from the database by its name
+URL: `http://localhost:8080/deleteFund/:id`
+Description: Deletes a specific mutual fund from the database by its id
 
 ## Getting Started
 
