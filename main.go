@@ -69,6 +69,7 @@ func main() {
 	router.DELETE("/deleteUser/:userID", deleteUser)
 	router.DELETE("/fund/:fundID", deleteFund)
 	router.PUT("/fund/:fundID", updateFund)
+	router.PUT("/user/:userID", updateUser)
 
 	router.Run()
 }
@@ -260,4 +261,43 @@ func updateFund(c *gin.Context) {
 	}
 
 	c.JSON(200, gin.H{"result": "success", "message": "Fund updated successfully"})
+}
+
+func updateUser(c *gin.Context) {
+	userID := c.Param("userID")
+
+	var updatedUser User
+	if err := c.ShouldBindJSON(&updatedUser); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Ensure the user ID in the URL matches the one in the request body
+	if userID != updatedUser.UserID {
+		c.JSON(400, gin.H{"error": "User ID in URL does not match the one in request body"})
+		return
+	}
+
+	filter := bson.M{"user_id": userID}
+	update := bson.M{"$set": bson.M{
+		"username":     updatedUser.Username,
+		"email":        updatedUser.Email,
+		"first_name":   updatedUser.FirstName,
+		"last_name":    updatedUser.LastName,
+		"date_of_birth": updatedUser.DateOfBirth,
+		"phone_number": updatedUser.PhoneNumber,
+	}}
+
+	result, err := userCollection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	if result.MatchedCount == 0 {
+		c.JSON(404, gin.H{"error": "User not found"})
+		return
+	}
+
+	c.JSON(200, gin.H{"result": "success", "message": "User updated successfully"})
 }
