@@ -60,6 +60,11 @@ Description: Deletes a specific mutual fund from the database by its id
 URL: `http://localhost:8080/fund/:fundID`
 Description: Updates a specific mutual fund's data in the database using its ID
 
+### Update User Information `PUT`
+
+URL: `http://localhost:8080/user/:userID`
+Description: Updates a specific user's details in the database using their user ID
+
 ## Getting Started
 
 Run the application using `go run .`. 
@@ -114,5 +119,19 @@ Input data can be entered by selecting `Body` tab, then choosing `raw and JSON` 
         }
     ],
     "rating": 4
+}
+```
+
+### For updating an existing user:
+
+```json
+{
+  "user_id": "20230501123456",
+  "username": "johndoe_updated",
+  "email": "john_updated@example.com",
+  "first_name": "John",
+  "last_name": "Doe",
+  "date_of_birth": "1990-01-01T00:00:00Z",
+  "phone_number": "+1987654321"
 }
 ```
