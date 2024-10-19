@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -18,11 +19,13 @@ type CAGR struct {
 }
 
 type Fund struct {
+	FundID   int    `json:"fund_id" bson:"fund_id"`
 	Name     string `json:"name" bson:"name"`
 	Category string `json:"category" bson:"category"`
 	CAGR     []CAGR `json:"cagr" bson:"cagr"`
 	Rating   int    `json:"rating" bson:"rating"`
 }
+
 type User struct {
 	UserID       string    `json:"user_id" bson:"user_id"`
 	Username     string    `json:"username" bson:"username"`
@@ -39,6 +42,7 @@ type User struct {
 
 var collection *mongo.Collection
 var userCollection *mongo.Collection
+var counterCollection *mongo.Collection
 
 func main() {
 	router := gin.Default()
@@ -56,11 +60,14 @@ func main() {
 
 	collection = client.Database("mutual_funds").Collection("funds")
 	userCollection = client.Database("mutual_funds").Collection("users")
+	counterCollection = client.Database("mutual_funds").Collection("counters")
 
 	router.GET("/getAllFunds", getAllFunds)
 	router.POST("/addFund", addFund)
 	router.GET("/user/:userID", getUser)
 	router.POST("/addUser", addUser)
+	router.DELETE("/fund/:fundID", deleteFund)
+	router.PUT("/fund/:fundID", updateFund)
 
 	router.Run()
 }
@@ -69,18 +76,26 @@ func addFund(c *gin.Context) {
 	var fund Fund
 
 	if err := c.ShouldBindJSON(&fund); err != nil {
-		c.JSON(400, gin.H{
-				"error": err.Error()})
+		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
-	_, err := collection.InsertOne(context.TODO(), fund)
+	// Get the next FundID
+	fundID, err := getNextFundID()
+	if err != nil {
+		c.JSON(500, gin.H{"error": "Failed to generate FundID"})
+		return
+	}
+
+	fund.FundID = fundID
+
+	_, err = collection.InsertOne(context.TODO(), fund)
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(200, gin.H{"result": "success"})
+	c.JSON(200, gin.H{"result": "success", "fund_id": fundID})
 }
 
 func getAllFunds(c *gin.Context) {
@@ -147,4 +162,84 @@ func addUser(c *gin.Context) {
 
 func generateUniqueUserID() string {
 	return time.Now().Format("20060102150405")
+}
+
+func getNextFundID() (int, error) {
+	filter := bson.M{"_id": "fundid"}
+	update := bson.M{"$inc": bson.M{"sequence_value": 1}}
+	options := options.FindOneAndUpdate().SetUpsert(true).SetReturnDocument(options.After)
+
+	var result struct {
+		SequenceValue int `bson:"sequence_value"`
+	}
+
+	err := counterCollection.FindOneAndUpdate(context.TODO(), filter, update, options).Decode(&result)
+	if err != nil {
+		return 0, err
+	}
+
+	return result.SequenceValue, nil
+}
+
+func deleteFund(c *gin.Context) {
+	fundID := c.Param("fundID")
+
+	// Convert fundID from string to int
+	id, err := strconv.Atoi(fundID)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Invalid fund ID"})
+		return
+	}
+
+	result, err := collection.DeleteOne(context.TODO(), bson.M{"fund_id": id})
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	if result.DeletedCount == 0 {
+		c.JSON(404, gin.H{"error": "Fund not found"})
+		return
+	}
+
+	c.JSON(200, gin.H{"result": "success", "message": "Fund deleted successfully"})
+}
+
+func updateFund(c *gin.Context) {
+	fundID := c.Param("fundID")
+
+	// Convert fundID from string to int
+	id, err := strconv.Atoi(fundID)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Invalid fund ID"})
+		return
+	}
+
+	var updatedFund Fund
+	if err := c.ShouldBindJSON(&updatedFund); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Ensure the fund ID in the URL matches the one in the request body
+	if id != updatedFund.FundID {
+		c.JSON(400, gin.H{"error": "Fund ID in URL does not match the one in request body"})
+		return
+	}
+
+	filter := bson.M{"fund_id": id}
+	update := bson.M{"$set": updatedFund}
+
+	result, err := collection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	if result.MatchedCount == 0 {
+		c.JSON(404, gin.H{"error": "Fund not found"})
+		return
+	}
+
+	c.JSON(200, gin.H{"result": "success", "message": "Fund updated successfully"})
 }
