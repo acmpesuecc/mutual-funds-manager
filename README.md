@@ -55,6 +55,11 @@ Description: Creates a new user account
 URL: `http://localhost:8080/deleteFund/:id`
 Description: Deletes a specific mutual fund from the database by its id
 
+### Update a Mutual Fund `PUT`
+
+URL: `http://localhost:8080/fund/:fundID`
+Description: Updates a specific mutual fund's data in the database using its ID
+
 ## Getting Started
 
 Run the application using `go run .`. 
@@ -91,5 +96,23 @@ Input data can be entered by selecting `Body` tab, then choosing `raw and JSON` 
   "last_name": "Doe",
   "date_of_birth": "1990-01-01T00:00:00Z",
   "phone_number": "+1234567890"
+}
+```
+
+### For updating an existing mutual fund:
+
+```json
+{
+    "fund_id": 1,
+    "name": "Updated Motilal Oswal Fund",
+    "category": "Equity",
+    "cagr": [
+        {
+            "1_year": 11.5,
+            "3_year": 9.7,
+            "5_year": 10.2
+        }
+    ],
+    "rating": 4
 }
 ```

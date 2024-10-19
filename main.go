@@ -67,6 +67,7 @@ func main() {
 	router.GET("/user/:userID", getUser)
 	router.POST("/addUser", addUser)
 	router.DELETE("/fund/:fundID", deleteFund)
+	router.PUT("/fund/:fundID", updateFund)
 
 	router.Run()
 }
@@ -202,4 +203,43 @@ func deleteFund(c *gin.Context) {
 	}
 
 	c.JSON(200, gin.H{"result": "success", "message": "Fund deleted successfully"})
+}
+
+func updateFund(c *gin.Context) {
+	fundID := c.Param("fundID")
+
+	// Convert fundID from string to int
+	id, err := strconv.Atoi(fundID)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Invalid fund ID"})
+		return
+	}
+
+	var updatedFund Fund
+	if err := c.ShouldBindJSON(&updatedFund); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Ensure the fund ID in the URL matches the one in the request body
+	if id != updatedFund.FundID {
+		c.JSON(400, gin.H{"error": "Fund ID in URL does not match the one in request body"})
+		return
+	}
+
+	filter := bson.M{"fund_id": id}
+	update := bson.M{"$set": updatedFund}
+
+	result, err := collection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	if result.MatchedCount == 0 {
+		c.JSON(404, gin.H{"error": "Fund not found"})
+		return
+	}
+
+	c.JSON(200, gin.H{"result": "success", "message": "Fund updated successfully"})
 }
